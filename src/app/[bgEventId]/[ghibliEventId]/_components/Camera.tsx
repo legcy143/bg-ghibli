@@ -48,6 +48,7 @@ export default function Camera() {
         width: number;
         height: number;
     } | null>(null);
+    const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const nextPage = usePaggingStore((state) => state.nextPage);
@@ -63,13 +64,28 @@ export default function Camera() {
     ];
 
     useEffect(() => {
+        // bro just fetch inital setting and apply this 
+        let FacingModeStorage = localStorage.getItem("FacingMode")
+        if (FacingModeStorage) {
+            setFacingMode(FacingModeStorage as 'user' | 'environment');
+        }
+    }, []);
+
+    const toggleCameraFacingMode = () => {
+        const newFacingMode = facingMode === 'user' ? 'environment' : 'user';
+        setFacingMode(newFacingMode);
+        localStorage.setItem('FacingMode', newFacingMode);
+        startCamera();
+    }
+
+    useEffect(() => {
         startCamera();
         return () => {
             if (stream) {
                 stream.getTracks().forEach((track) => track.stop());
             }
         };
-    }, []); 
+    }, []);
 
     useEffect(() => {
         if (stream && videoRef.current) {
@@ -100,7 +116,7 @@ export default function Camera() {
                 }
             };
         }
-    }, [stream]);
+    }, [stream , facingMode]);
 
     const startCamera = async () => {
         setIsLoading(true);
@@ -115,7 +131,7 @@ export default function Camera() {
                 video: {
                     width: { ideal: 320 },
                     height: { ideal: 427 },
-                    facingMode: 'user',
+                    facingMode: facingMode,
                     aspectRatio: { ideal: 3 / 4 },
                 },
             });
@@ -458,15 +474,18 @@ export default function Camera() {
                                 </Button>
                             </>
                         ) : (
-                            <Button
-                                isIconOnly
-                                onPress={timerValue > 0 ? startTimerCapture : capturePhoto}
-                                isDisabled={isTimerActive || isLoading}
-                                size="lg"
-                                className="w-20 h-20 bg-black text-white hover:bg-gray-800 disabled:opacity-50 rounded-full"
-                            >
-                                <CameraIcon size={32} />
-                            </Button>
+                            <>
+
+                                <Button
+                                    isIconOnly
+                                    onPress={timerValue > 0 ? startTimerCapture : capturePhoto}
+                                    isDisabled={isTimerActive || isLoading}
+                                    size="lg"
+                                    className="w-20 h-20 bg-black text-white hover:bg-gray-800 disabled:opacity-50 rounded-full"
+                                >
+                                    <CameraIcon size={32} />
+                                </Button>
+                            </>
                         )}
                     </div>
                 </div>
@@ -485,7 +504,9 @@ export default function Camera() {
                                 </ModalHeader>
                                 <ModalBody>
                                     <div className="space-y-6">
-                                        {/* Mirror Toggle Section */}
+                                        <Button onPress={toggleCameraFacingMode}>
+                                            Toggle
+                                        </Button>
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                                                 <FlipHorizontal size={20} />
@@ -494,6 +515,7 @@ export default function Camera() {
                                                     (Currently: {isMirrored ? 'Mirrored' : 'Normal'})
                                                 </span>
                                             </h4>
+
                                             <div className="grid grid-cols-2 gap-3">
                                                 <button
                                                     onClick={() => setIsMirrored(true)}
@@ -521,6 +543,28 @@ export default function Camera() {
                                                         Camera view
                                                     </div>
                                                 </button>
+                                            </div>
+                                        </div>
+                                         {/* Timer Section */}
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                                <Timer size={20} />
+                                                Timer Options
+                                            </h4>
+                                            <div className="flex justify-between gap-3">
+                                                {timerOptions.map((option) => (
+                                                    <button
+                                                        key={option.value}
+                                                        onClick={() => setTimerValue(option.value)}
+                                                        className={`p-5 rounded-xl border-2 transition-all duration-200 text-sm ${timerValue === option.value
+                                                            ? 'border-blue-500 bg-blue-50 text-blue-700'
+                                                            : 'border-gray-200 hover:border-gray-400 text-gray-700'
+                                                            }`}
+                                                    >
+                                                        {/* <div className="text-2xl mb-2">{option.icon}</div> */}
+                                                        <div className="font-medium">{option.label}</div>
+                                                    </button>
+                                                ))}
                                             </div>
                                         </div>
 
@@ -561,29 +605,7 @@ export default function Camera() {
                                                 </div>
                                             </div>
                                         )}
-
-                                        {/* Timer Section */}
-                                        <div>
-                                            <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                                <Timer size={20} />
-                                                Timer Options
-                                            </h4>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                {timerOptions.map((option) => (
-                                                    <button
-                                                        key={option.value}
-                                                        onClick={() => setTimerValue(option.value)}
-                                                        className={`p-4 rounded-xl border-2 transition-all duration-200 ${timerValue === option.value
-                                                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                                                            : 'border-gray-200 hover:border-gray-400 text-gray-700'
-                                                            }`}
-                                                    >
-                                                        <div className="text-2xl mb-2">{option.icon}</div>
-                                                        <div className="font-medium">{option.label}</div>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
