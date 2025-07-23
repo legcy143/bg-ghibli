@@ -4,6 +4,8 @@ import { API_URL } from '@/utils/constant';
 import { useParams } from 'next/navigation';
 import React, { useEffect } from 'react'
 import { io } from 'socket.io-client';
+import ImageActions from './ImageActions';
+import Stepper, { Step } from './Stepper';
 
 
 const GhibliSocketurl = `${API_URL}/ghibli-photo-booth`;
@@ -13,7 +15,7 @@ const socket = io(GhibliSocketurl, {
 
 export default function GhibliResult() {
 
-    const ghibliImage = useBgXGhibli((state) => state.ghibliImage);
+    const ghibliImage = useBgXGhibli((state) => state.ghibliImage) ;
     const setGhibliImage = useBgXGhibli((state) => state.setGhibliImage);
     const ghibliTaskId = useBgXGhibli((state) => state.ghibliTaskId);
     const isGhibliImageProcessing = useBgXGhibli((state) => state.isGhibliImageProcessing);
@@ -36,21 +38,29 @@ export default function GhibliResult() {
         };
 
     }, [ghibliTaskId, ghibliImage]);
+
+    const steps: Step[] = [
+        { label: 'Image captured', status: 'done' },
+        { label: 'Removing background', status: 'done' },
+        { label: 'Converting to Ghibli image', status: ghibliImage ? 'done' : 'active' },
+    ];
+
     return (
-        <div>
+        <div className="h-full grid place-items-center-safe p-5 gap-8 overflow-y-auto">
             {
-                ghibliImage ?(
-                    <div className='flex flex-col items-center justify-center gap-4'>
-                        <h1 className='text-2xl font-bold'>Final Output</h1>
-                        <img src={ghibliImage} alt="Ghibli Result" className='w-full max-w-[80rem] rounded-lg shadow-md' />
+                ghibliImage ? (
+                    <div className='flex flex-col items-center justify-center gap-4 max-w-[20rem] p-2'>
+                        <img src={ghibliImage} alt="Ghibli Result" className='w-full h-full rounded-lg shadow-md' />
+                        <ImageActions imageUrl={ghibliImage} />
                     </div>
                 ) : (
-                    <div className='flex flex-col items-center justify-center gap-4'>
-                        <h1 className='text-2xl font-bold'>Processing Ghibli Image...</h1>
-                        {isGhibliImageProcessing && <p>Please wait, your image is being processed.</p>}
+                    <div className="w-full max-w-lg mt-8">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Processing your image</h2>
+                        <Stepper steps={steps} />
                     </div>
                 )
             }
+
         </div>
-    )
+    );
 }

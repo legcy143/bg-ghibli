@@ -3,6 +3,7 @@ import { usePaggingStore } from '@/store/usePagging';
 import { API_URL } from '@/utils/constant';
 import { useParams } from 'next/navigation';
 import React, { useEffect } from 'react'
+import Stepper, { Step } from './Stepper';
 import { io } from 'socket.io-client';
 
 const url = `${API_URL}`;
@@ -48,15 +49,19 @@ export default function BgResult() {
 
 
   return (
-    <div>
-      FinalOutput : {bgtaskId}
-      {
-        BgOutputImage && (
-          <div className='flex flex-col items-center justify-center gap-4'>
-            <img src={BgOutputImage} alt='Background Output size-[5rem]' className='max-w-full h-auto' />
-          </div>
-        )
-      }
+    <div className="flex flex-col items-center justify-center h-[60vh] w-full">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Processing your image</h2>
+        <div className="flex flex-col gap-6 items-center">
+          <Stepper
+            steps={[
+              { label: 'Image captured', status: 'done' },
+              { label: 'Removing background', status: BgOutputImage ? 'done' : 'active' },
+              { label: 'Converting to Ghibli image', status: BgOutputImage ? 'active' : 'pending' },
+            ]}
+          />
+        </div>
+      </div>
     </div>
   )
 }
