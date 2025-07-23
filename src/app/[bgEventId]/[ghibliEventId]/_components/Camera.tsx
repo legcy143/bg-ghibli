@@ -551,12 +551,12 @@ export default function Camera() {
                                                 <Timer size={20} />
                                                 Timer Options
                                             </h4>
-                                            <div className="flex justify-between gap-3">
+                                            <div className="flex  justify-between gap-2 ">
                                                 {timerOptions.map((option) => (
                                                     <button
                                                         key={option.value}
                                                         onClick={() => setTimerValue(option.value)}
-                                                        className={`p-5 rounded-xl border-2 transition-all duration-200 text-sm ${timerValue === option.value
+                                                        className={`p-4 rounded-xl border-2 transition-all duration-200 text-sm ${timerValue === option.value
                                                             ? 'border-blue-500 bg-blue-50 text-blue-700'
                                                             : 'border-gray-200 hover:border-gray-400 text-gray-700'
                                                             }`}
