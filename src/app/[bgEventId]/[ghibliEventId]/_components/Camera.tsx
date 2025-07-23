@@ -77,7 +77,6 @@ export default function Camera() {
         const newFacingMode = facingMode === 'user' ? 'environment' : 'user';
         setFacingMode(newFacingMode);
         localStorage.setItem('FacingMode', newFacingMode);
-        startCamera();
     }
 
     useEffect(() => {
@@ -87,7 +86,7 @@ export default function Camera() {
                 stream.getTracks().forEach((track) => track.stop());
             }
         };
-    }, []);
+    }, [facingMode]);
 
     useEffect(() => {
         if (stream && videoRef.current) {
@@ -123,7 +122,6 @@ export default function Camera() {
     const startCamera = async () => {
         setIsLoading(true);
         setCameraError(null);
-
         try {
             if (stream) {
                 stream.getTracks().forEach((track) => track.stop());
@@ -507,7 +505,7 @@ export default function Camera() {
                                 <ModalBody>
                                     <div className="space-y-6">
                                         <Button onPress={toggleCameraFacingMode}>
-                                            Toggle
+                                            Toggle {"("} {facingMode} {")"}
                                         </Button>
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
