@@ -65,9 +65,11 @@ export default function Camera() {
 
     useEffect(() => {
         // bro just fetch inital setting and apply this 
-        let FacingModeStorage = localStorage.getItem("FacingMode")
-        if (FacingModeStorage) {
-            setFacingMode(FacingModeStorage as 'user' | 'environment');
+        if (typeof window !== 'undefined') {
+            let FacingModeStorage = localStorage.getItem("FacingMode")
+            if (FacingModeStorage) {
+                setFacingMode(FacingModeStorage as 'user' | 'environment');
+            }
         }
     }, []);
 
@@ -116,7 +118,7 @@ export default function Camera() {
                 }
             };
         }
-    }, [stream , facingMode]);
+    }, [stream, facingMode]);
 
     const startCamera = async () => {
         setIsLoading(true);
@@ -545,7 +547,7 @@ export default function Camera() {
                                                 </button>
                                             </div>
                                         </div>
-                                         {/* Timer Section */}
+                                        {/* Timer Section */}
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                                                 <Timer size={20} />
@@ -605,7 +607,7 @@ export default function Camera() {
                                                 </div>
                                             </div>
                                         )}
-                                        
+
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
