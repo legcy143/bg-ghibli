@@ -22,8 +22,15 @@ export default function ChooseBackgroundImage() {
 
     return (
         <section className='h-full w-full flex flex-col items-center overflow-y-auto'>
-            <h1 className=' p-5 text-4xl font-bold'>Choose Backgorund Image</h1>
+            <h1 className=' p-5 sm:text-xl md:text-2xl text-4xl font-bold'>Choose Backgorund Image</h1>
             <div className='flex flex-row items-center justify-center flex-wrap gap-4 p-10  w-full max-w-[80rem]'>
+                {
+                    backgroundEventData?.backgroundImages.length === 0 && (
+                        <div className="text-center w-full">
+                            <p className="text-gray-600">No background images available <br /> please contact the event organizer</p>
+                        </div>
+                    )
+                }
                 {
                     backgroundEventData?.backgroundImages.map((e) => (
                         <div key={e._id} className={cn("bg-gray-200 p-2 rounded-lg shadow-md mb-4 max-w-[15rem]", BackgroundImageId === e._id ? "border-2 border-blue-500" : "")}

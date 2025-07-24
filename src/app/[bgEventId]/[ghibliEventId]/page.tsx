@@ -18,6 +18,7 @@ export default function page() {
 
     const currentPage = usePaggingStore((state) => state.currentPage);
     const fetchBackgroundEventData = useBgXGhibli((state) => state.fetchBackgroundEventData);
+    const backgroundEventData = useBgXGhibli((state) => state.backgroundEventData);
     const isFetchBackgroundEventLoading = useBgXGhibli((state) => state.isFetchBackgroundEventLoading);
 
     let bgEventId = useParams().bgEventId as string;
@@ -38,10 +39,22 @@ export default function page() {
         );
     }
 
+    if (!backgroundEventData) {
+        return (
+            <section className="h-[100dvh] w-full flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Event not found</h2>
+                    <p className="text-gray-600">Please check the event ID or try again later.</p>
+                </div>
+            </section>
+        );
+    }
+
 
 
     return (
         <section className='h-[100dvh] w-full flex items-center justify-center'>
+            <img src={backgroundEventData?.background} alt="Background" className="fixed -z-1 w-full h-auto rounded-lg mb-2" />
             {pages[currentPage]}
         </section>
     );
