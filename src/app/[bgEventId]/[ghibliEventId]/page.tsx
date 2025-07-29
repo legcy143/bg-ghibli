@@ -54,7 +54,7 @@ export default function page() {
 
     return (
         <section className='h-[100dvh] w-full flex items-center justify-center'>
-            <img src={backgroundEventData?.background} alt="Background" className="fixed -z-1 w-full h-full object-cover rounded-lg mb-2" />
+            {backgroundEventData?.background && <img src={backgroundEventData.background} alt="Background" className="fixed -z-1 w-full h-full object-cover rounded-lg mb-2" />}
             {pages[currentPage]}
         </section>
     );
