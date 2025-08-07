@@ -1,1 +1,1 @@
-export const API_URL = 'https://api.gokapturehub.com';
+export const API_URL = 'https://api.quenth.com';
